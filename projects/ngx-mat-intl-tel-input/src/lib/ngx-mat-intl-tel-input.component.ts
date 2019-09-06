@@ -359,9 +359,6 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
           this.mask = this.getMaskFromPlaceholder(country);
         }
 
-        const realNumber = this.maskPrefix + this.phoneNumber;
-        console.log(realNumber);
-
         if (
           this.formGroup &&
           this.controleName
