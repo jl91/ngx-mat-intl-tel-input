@@ -131,16 +131,16 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
     return this.focused || !this.empty;
   }
 
-  get elementRef(): ElementRef {
-    return this.elRef;
-  }
-
   static getPhoneNumberPlaceHolder(countryISOCode: any): string {
     try {
       return getExampleNumber(countryISOCode, Examples).number.toString();
     } catch (e) {
       return e;
     }
+  }
+
+  getElementRef(): ElementRef<HTMLElement> {
+    return this.elRef;
   }
 
   onTouched = () => {
