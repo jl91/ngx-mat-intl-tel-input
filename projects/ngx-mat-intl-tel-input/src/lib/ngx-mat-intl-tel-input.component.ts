@@ -69,13 +69,14 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
     private elRef: ElementRef<HTMLElement>,
     @Optional() @Self() public ngControl: NgControl
   ) {
-    fm.monitor(elRef, true).subscribe(origin => {
-      if (this.focused && !origin) {
-        this.onTouched();
-      }
-      this.focused = !!origin;
-      this.stateChanges.next();
-    });
+    fm.monitor(elRef, true)
+      .subscribe(origin => {
+        if (this.focused && !origin) {
+          this.onTouched();
+        }
+        this.focused = !!origin;
+        this.stateChanges.next();
+      });
     this.fetchCountryData();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -128,6 +129,10 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
   @HostBinding('class.ngx-floating')
   get shouldLabelFloat() {
     return this.focused || !this.empty;
+  }
+
+  get elementRef(): ElementRef {
+    return this.elRef;
   }
 
   static getPhoneNumberPlaceHolder(countryISOCode: any): string {
