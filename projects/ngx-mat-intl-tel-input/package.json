@@ -4,8 +4,7 @@
   "peerDependencies": {
     "@angular/common": "~7.3.0",
     "@angular/core": "~7.2.0",
-    "@angular/forms": "^7.2.12",
-    "libphonenumber-js": "^1.7.16"
+    "@angular/forms": "^7.2.12"
   },
   "repository": {
     "type": "git",
@@ -38,5 +37,12 @@
     "input",
     "flag"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "google-libphonenumber": "^3.2.4",
+    "ngx-mask": "8.0.4"
+  },
+  "devDependencies": {
+    "@types/google-libphonenumber": "^7.4.17"
+  }
 }

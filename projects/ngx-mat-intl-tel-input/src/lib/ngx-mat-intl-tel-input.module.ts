@@ -1,24 +1,29 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { NgxMatIntlTelInputComponent } from './ngx-mat-intl-tel-input.component';
-import {MatButtonModule, MatInputModule, MatMenuModule, MatDividerModule} from '@angular/material';
-import { SearchPipe } from './search.pipe';
+import {NgxMatIntlTelInputComponent} from './ngx-mat-intl-tel-input.component';
+import {MatButtonModule, MatDividerModule, MatInputModule, MatMenuModule} from '@angular/material';
+import {SearchPipe} from './search.pipe';
+import {NgxMaskModule} from 'ngx-mask';
 
 @NgModule({
-  declarations: [
-    NgxMatIntlTelInputComponent,
-    SearchPipe,
-  ],
-  imports:[
+  imports: [
     CommonModule,
     FormsModule,
     MatInputModule,
     MatMenuModule,
     MatButtonModule,
     MatDividerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMaskModule.forRoot({})
   ],
-  exports: [NgxMatIntlTelInputComponent]
+  declarations: [
+    NgxMatIntlTelInputComponent,
+    SearchPipe,
+  ],
+  exports: [
+    NgxMatIntlTelInputComponent
+  ]
 })
-export class NgxMatIntlTelInputModule { }
+export class NgxMatIntlTelInputModule {
+}
