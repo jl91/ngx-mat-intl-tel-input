@@ -8,7 +8,7 @@ input:not(.country-search) {
   width: 100%;
   box-sizing: border-box;
   padding-right: 6px;
-  padding-left: 90px;
+  padding-left: 60px;
   margin-left: 0;
   position: relative;
   z-index: 0;
@@ -48,14 +48,14 @@ input.country-search {
   background-image: url(https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey600_18dp.png);
   background-position: right center;
   background-repeat: no-repeat;
-  background-size: 18px auto;
+  background-size: 100% auto;
   border-radius: 0;
   color: rgba(0, 0, 0, .87);
   flex-shrink: 0;
   height: initial;
   line-height: unset;
   padding: 0 20px 0 0;
-  width: 90px;
+  width: 45px;
   opacity: 0;
   transition: opacity 200ms;
   position: absolute;

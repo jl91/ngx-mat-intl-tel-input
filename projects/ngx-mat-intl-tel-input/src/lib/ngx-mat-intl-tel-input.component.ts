@@ -94,7 +94,7 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
   countryChanged: EventEmitter<Country> = new EventEmitter<Country>();
 
   mask = '';
-  maskPrefix: string;
+  maskPrefix = '';
 
   private subscriptions: Subscription = new Subscription();
 
@@ -185,12 +185,14 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
 
   ngOnInit() {
     if (this.preferredCountries.length) {
-      this.preferredCountries.forEach(iso2 => {
-        const preferredCountry = this.allCountries.filter((c) => {
-          return c.iso2 === iso2;
+      this.preferredCountries
+        .forEach((iso2: string) => {
+          const preferredCountry = this.allCountries
+            .filter((country: Country) => {
+              return country.iso2 === iso2;
+            });
+          this.preferredCountriesInDropDown.push(preferredCountry[0]);
         });
-        this.preferredCountriesInDropDown.push(preferredCountry[0]);
-      });
     }
 
     if (this.onlyCountries.length) {
@@ -227,7 +229,10 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
       this.value = this.numberInstance.getNationalNumber();
       this.maskPrefix = `+${this.selectedCountry.dialCode}`;
 
-      if (this.formGroup && this.controleName) {
+      if (
+        this.formGroup
+        && this.controleName
+      ) {
         this.formGroup
           .get(this.controleName)
           .setValue(this.maskPrefix + this.phoneNumber);
@@ -355,6 +360,7 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
         }
 
         this.maskPrefix = `+${country.dialCode}`;
+
         if (this.enableMask) {
           this.mask = this.getMaskFromPlaceholder(country);
         }
@@ -376,6 +382,7 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
     const subscription = this.fm
       .monitor(this.elRef, true)
       .subscribe(origin => {
+
         if (this.focused && !origin) {
           this.onTouched();
         }

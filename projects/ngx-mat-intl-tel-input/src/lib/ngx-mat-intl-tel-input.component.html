@@ -2,7 +2,6 @@
   <input type="hidden" [formControlName]="controleName">
 </ng-container>
 
-
 <div class="ngx-mat-tel-input-container">
   <button type="button"
           mat-button
@@ -58,7 +57,6 @@
     </ng-container>
   </mat-menu>
 
-
   <ng-container *ngIf="enableMask">
     <input matInput
            #focusable
@@ -73,7 +71,7 @@
            [errorStateMatcher]="errorStateMatcher"
            [disabled]="disabled"
            [mask]="mask"
-           [prefix]="maskPrefix"
+           [prefix]="(focused || !empty) ? maskPrefix : ''"
     >
   </ng-container>
 
