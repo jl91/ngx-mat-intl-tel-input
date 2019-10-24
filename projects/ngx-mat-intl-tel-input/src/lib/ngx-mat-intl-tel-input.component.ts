@@ -13,14 +13,14 @@ import {
   Self
 } from '@angular/core';
 
-import {FormGroup, NgControl} from '@angular/forms';
-import {CountryCode} from './data/country-code';
-import {Country} from './model/country.model';
-import {ErrorStateMatcher, MatFormFieldControl} from '@angular/material';
-import {coerceBooleanProperty} from '@angular/cdk/coercion';
-import {Subject, Subscription} from 'rxjs';
-import {FocusMonitor} from '@angular/cdk/a11y';
-import {PhoneNumber, PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber';
+import { FormGroup, NgControl } from '@angular/forms';
+import { CountryCode } from './data/country-code';
+import { Country } from './model/country.model';
+import { ErrorStateMatcher, MatFormFieldControl } from '@angular/material';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Subject, Subscription } from 'rxjs';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import { PhoneNumber, PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
 
 
 const phoneNumberUtil = PhoneNumberUtil.getInstance();
@@ -38,7 +38,7 @@ const phoneNumberUtil = PhoneNumberUtil.getInstance();
     },
   ]
 })
-export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, MatFormFieldControl<any> {
+export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implements OnInit, OnDestroy, DoCheck {
   static nextId = 0;
 
   @Input()
@@ -105,6 +105,7 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
     @Optional() @Self() public ngControl: NgControl,
     private changeDetectorRef: ChangeDetectorRef
   ) {
+    super();
     this.registerOnFocusMonitor();
 
     this.fetchCountryData();
@@ -178,10 +179,10 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
   }
 
   onTouched = () => {
-  };
+  }
 
   propagateChange = (_: any) => {
-  };
+  }
 
   ngOnInit() {
     if (this.preferredCountries.length) {
@@ -218,11 +219,20 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
 
   public onPhoneNumberChange(): void {
     try {
+      const control = this.formGroup
+        .get(this.controleName);
+
+      if (
+        this.phoneNumber.charAt(2).toString() === '9'
+        && this.selectedCountry.iso2 === 'br'
+      ) {
+        this.mask = ' 00 00000-0000';
+      } else {
+        this.mask = this.getMaskFromPlaceholder(this.selectedCountry);
+      }
 
       if (this.formGroup && this.controleName) {
-        this.formGroup
-          .get(this.controleName)
-          .setValue(null);
+        control.setValue(null);
       }
 
       this.numberInstance = phoneNumberUtil.parse(this._getFullNumber());
@@ -233,9 +243,8 @@ export class NgxMatIntlTelInputComponent implements OnInit, OnDestroy, DoCheck, 
         this.formGroup
         && this.controleName
       ) {
-        this.formGroup
-          .get(this.controleName)
-          .setValue(this.maskPrefix + this.phoneNumber);
+        const phoneNumber = this.phoneNumber ? this.maskPrefix + this.phoneNumber : null;
+        control.setValue(phoneNumber);
       }
 
     } catch (e) {
