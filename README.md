@@ -47,7 +47,7 @@ Refer to main app in this repository for working example.
   [enablePlaceholder]="true"
   [enableSearch]="true"
   name="phone"
-  controleName="phone"></ngx-mat-intl-tel-input>
+  controlName="phone"></ngx-mat-intl-tel-input>
 </form>
 
 ```
@@ -77,7 +77,7 @@ If you want to show the sample number for the country selected or errors , use m
     [enableAutoCountrySelect]="true"
     [enablePlaceholder]="true"
     name="phone"
-    controleName="phone" #phone></ngx-mat-intl-tel-input>
+    controlName="phone" #phone></ngx-mat-intl-tel-input>
   <mat-hint>e.g. {{phone.selectedCountry.placeHolder}}</mat-hint>
   <mat-error *ngIf="f.form.controls['phone']?.errors?.required">Required Field</mat-error>
   <mat-error *ngIf="f.form.controls['phone']?.errors?.validatePhoneNumber">Invalid Number</mat-error>

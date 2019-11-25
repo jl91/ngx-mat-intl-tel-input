@@ -5,15 +5,15 @@ import {
   ElementRef,
   EventEmitter,
   HostBinding,
-  Input,
+  Input, OnChanges,
   OnDestroy,
   OnInit,
   Optional,
   Output,
-  Self
+  Self, SimpleChanges
 } from '@angular/core';
 
-import {FormGroup, NgControl} from '@angular/forms';
+import {AbstractControl, FormGroup, NgControl} from '@angular/forms';
 import {CountryCode} from './data/country-code';
 import {Country} from './model/country.model';
 import {ErrorStateMatcher, MatFormFieldControl} from '@angular/material';
@@ -38,7 +38,7 @@ const phoneNumberUtil = PhoneNumberUtil.getInstance();
     },
   ]
 })
-export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implements OnInit, OnDestroy, DoCheck {
+export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implements OnInit, OnDestroy, DoCheck, OnChanges {
   static nextId = 0;
 
   @Input()
@@ -69,7 +69,7 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
   enableSearch = false;
 
   @Input()
-  controleName: string;
+  controlName: string;
 
   @Input()
   formGroup: FormGroup;
@@ -97,6 +97,10 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
   maskPrefix = '';
 
   private subscriptions: Subscription = new Subscription();
+
+  private initialValue = '';
+
+  private initialCountry: Country;
 
   constructor(
     private countryCodeData: CountryCode,
@@ -185,6 +189,7 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
   }
 
   ngOnInit() {
+
     if (this.preferredCountries.length) {
       this.preferredCountries
         .forEach((iso2: string) => {
@@ -207,6 +212,22 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
     }
 
     this.countryChanged.emit(this.selectedCountry);
+
+    const value = this.getFormControl().value;
+    this.onPhoneNumberChange(value);
+
+    if (this.initialCountry) {
+      this.selectedCountry = this.initialCountry;
+
+      this.countryChanged.emit(this.selectedCountry);
+      this.onPhoneNumberChange(this.initialValue);
+      return;
+    }
+
+  }
+
+  private getFormControl(): AbstractControl {
+    return this.formGroup.get(this.controlName);
   }
 
   ngDoCheck(): void {
@@ -219,8 +240,7 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
 
   public onPhoneNumberChange(value: string): void {
     try {
-      const control = this.formGroup
-        .get(this.controleName);
+      const control = this.getFormControl();
 
       if (
         value.charAt(2).toString() === '9'
@@ -231,7 +251,7 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
         this.mask = this.getMaskFromPlaceholder(this.selectedCountry);
       }
 
-      if (this.formGroup && this.controleName) {
+      if (this.formGroup && this.controlName) {
         control.setValue(null);
       }
 
@@ -241,14 +261,15 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
 
       if (
         this.formGroup
-        && this.controleName
+        && this.controlName
       ) {
         const phoneNumber = value ? this.maskPrefix + value : null;
+        this.phoneNumber = phoneNumber;
         control.setValue(phoneNumber);
       }
 
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       // if no possible numbers are there,
       // then the full number is passed so that validator could be triggered and proper error could be shown
       this.value = this._getFullNumber();
@@ -259,7 +280,7 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
   public onCountrySelect(country: Country): void {
     this.selectedCountry = country;
     this.countryChanged.emit(this.selectedCountry);
-    this.onPhoneNumberChange('');
+    this.onPhoneNumberChange(this.phoneNumber);
   }
 
   public onInputKeyPress(event): void {
@@ -377,10 +398,9 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
 
         if (
           this.formGroup &&
-          this.controleName
+          this.controlName
         ) {
-          this.formGroup
-            .get(this.controleName)
+          this.getFormControl()
             .setValue(this.maskPrefix + this.phoneNumber);
         }
 
@@ -420,6 +440,50 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
       prefix = '';
     }
     return prefix + numericVal;
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+
+    if (
+      changes.formGroup.currentValue
+      && changes.formGroup.isFirstChange()
+    ) {
+      this.setInitialValue();
+    }
+
+  }
+
+  private setInitialValue(): void {
+    this.initialValue = this.getFormControl().value;
+
+    if (!this.initialValue) {
+      return;
+    }
+
+    this.numberInstance = phoneNumberUtil.parse(this.initialValue);
+    const phoneDial = this.numberInstance.values_['1'];
+
+    const selectedCountry = this.allCountries
+      .find((country: Country) => {
+        return country.dialCode.toString() === phoneDial.toString();
+      });
+
+    if (!selectedCountry) {
+      return;
+    }
+    this.initialCountry = selectedCountry;
+
+    const phoneNumber = this.numberInstance.values_['2'];
+    this.phoneNumber = phoneNumber.toString();
+    this.maskPrefix = `+${phoneDial}`;
+
+
+    // setTimeout(() => {
+    // this.countryChanged.emit(this.initialCountry);
+    // this.onPhoneNumberChange(phoneNumber);
+    // this.onCountrySelect(this.initialCountry);
+    // }, 100);
+
   }
 
 }
