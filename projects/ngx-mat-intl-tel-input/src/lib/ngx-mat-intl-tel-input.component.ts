@@ -13,14 +13,14 @@ import {
   Self
 } from '@angular/core';
 
-import { FormGroup, NgControl } from '@angular/forms';
-import { CountryCode } from './data/country-code';
-import { Country } from './model/country.model';
-import { ErrorStateMatcher, MatFormFieldControl } from '@angular/material';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { Subject, Subscription } from 'rxjs';
-import { FocusMonitor } from '@angular/cdk/a11y';
-import { PhoneNumber, PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
+import {FormGroup, NgControl} from '@angular/forms';
+import {CountryCode} from './data/country-code';
+import {Country} from './model/country.model';
+import {ErrorStateMatcher, MatFormFieldControl} from '@angular/material';
+import {coerceBooleanProperty} from '@angular/cdk/coercion';
+import {Subject, Subscription} from 'rxjs';
+import {FocusMonitor} from '@angular/cdk/a11y';
+import {PhoneNumber, PhoneNumberFormat, PhoneNumberUtil} from 'google-libphonenumber';
 
 
 const phoneNumberUtil = PhoneNumberUtil.getInstance();
@@ -217,13 +217,13 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
     this.changeDetectorRef.detectChanges();
   }
 
-  public onPhoneNumberChange(): void {
+  public onPhoneNumberChange(value: string): void {
     try {
       const control = this.formGroup
         .get(this.controleName);
 
       if (
-        this.phoneNumber.charAt(2).toString() === '9'
+        value.charAt(2).toString() === '9'
         && this.selectedCountry.iso2 === 'br'
       ) {
         this.mask = ' 00 00000-0000';
@@ -243,11 +243,12 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
         this.formGroup
         && this.controleName
       ) {
-        const phoneNumber = this.phoneNumber ? this.maskPrefix + this.phoneNumber : null;
+        const phoneNumber = value ? this.maskPrefix + value : null;
         control.setValue(phoneNumber);
       }
 
     } catch (e) {
+      console.error(e);
       // if no possible numbers are there,
       // then the full number is passed so that validator could be triggered and proper error could be shown
       this.value = this._getFullNumber();
@@ -258,7 +259,7 @@ export class NgxMatIntlTelInputComponent extends MatFormFieldControl<any> implem
   public onCountrySelect(country: Country): void {
     this.selectedCountry = country;
     this.countryChanged.emit(this.selectedCountry);
-    this.onPhoneNumberChange();
+    this.onPhoneNumberChange('');
   }
 
   public onInputKeyPress(event): void {
