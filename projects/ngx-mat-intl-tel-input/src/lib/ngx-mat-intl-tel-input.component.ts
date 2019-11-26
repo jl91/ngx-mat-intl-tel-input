@@ -16,7 +16,8 @@ import {
 import {AbstractControl, FormGroup, NgControl} from '@angular/forms';
 import {CountryCode} from './data/country-code';
 import {Country} from './model/country.model';
-import {ErrorStateMatcher, MatFormFieldControl} from '@angular/material';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatFormFieldControl } from '@angular/material/form-field';
 import {coerceBooleanProperty} from '@angular/cdk/coercion';
 import {Subject, Subscription} from 'rxjs';
 import {FocusMonitor} from '@angular/cdk/a11y';
